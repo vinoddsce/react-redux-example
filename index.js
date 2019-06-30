@@ -1,44 +1,49 @@
-const redux = require('redux');
-
-const createStore = redux.createStore;
-
-const initialState = {
-    counter: 0,
-    doubleCounter: 0
+let initialState = {
+    counter: 0
 }
 
-const rootReducer = (state = initialState, action) => {
-
-    if (action.type === 'COUNTER_INC') {
-        return {
-            ...state,
-            counter: state.counter + 1
-        }
+let reducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'INCREASE': return { ...state, counter: state.counter + 1 }
+        case 'DECREASE': return { ...state, counter: state.counter + 1 }
+        default: return state
     }
-
-    if (action.type === 'COUNTER_DEC') {
-        return {
-            ...state,
-            counter: state.counter - 1
-        }
-    }
-
-    if (action.type === 'COUNTER_ADD') {
-        return {
-            ...state,
-            counter: state.counter + action.value
-        }
-    }
-
-    return state;
 }
 
-const store = createStore(rootReducer);
+let store = Redux.createStore(reducer)
 
-store.subscribe(() => {
-    console.log("[Subscription]", store.getState());
-})
+console.log("store", store);
 
-store.dispatch({ type: 'COUNTER_INC' });
-store.dispatch({ type: 'COUNTER_ADD', value: 100 });
-store.dispatch({ type: 'COUNTER_DEC' });
+class RootComponent extends React.Component {
+    render() {
+        return <div>
+            <div>{this.props.number}</div>
+            <button onClick={this.props.increase}>+</button>
+            <button onClick={this.props.decrease}>-</button>
+        </div>
+    }
+}
+
+let mapStateToProps = state => {
+    return {
+        number: state.counter
+    }
+}
+
+let mapDispatchToProps = dispatch => {
+    return {
+        increase: () => dispatch({ type: 'INCREASE' }),
+        decrease: () => dispatch({ type: 'DECREASE' })
+    }
+}
+
+
+const ConnectedRootComponent = ReactRedux.connect(
+    mapStateToProps, mapDispatchToProps
+)(RootComponent)
+
+
+ReactDOM.render(
+    <ReactRedux.Provider store={store}>
+        <ConnectedRootComponent />
+    </ReactRedux.Provider>, document.getElementById('root'))
