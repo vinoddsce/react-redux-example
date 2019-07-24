@@ -5,7 +5,7 @@ let initialState = {
 let reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'INCREASE': return { ...state, counter: state.counter + 1 }
-        case 'DECREASE': return { ...state, counter: state.counter + 1 }
+        case 'DECREASE': return { ...state, counter: state.counter - 1 }
         default: return state
     }
 }
@@ -16,6 +16,7 @@ console.log("store", store);
 
 class RootComponent extends React.Component {
     render() {
+        console.log("this", this.dispatch);
         return <div>
             <div>{this.props.number}</div>
             <button onClick={this.props.increase}>+</button>
@@ -41,9 +42,11 @@ let mapDispatchToProps = dispatch => {
 const ConnectedRootComponent = ReactRedux.connect(
     mapStateToProps, mapDispatchToProps
 )(RootComponent)
-
+console.log("ConnectedRootComponent", ConnectedRootComponent);
 
 ReactDOM.render(
     <ReactRedux.Provider store={store}>
         <ConnectedRootComponent />
     </ReactRedux.Provider>, document.getElementById('root'))
+
+
